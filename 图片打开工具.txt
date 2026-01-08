@@ -1,0 +1,65 @@
+工具：openapi: 3.0.3
+info:
+  title: 打开本地图片文件
+  version: 1.0.0
+  description: 接收本地完整路径，直接打开本地图片文件
+servers:
+  - url: http://10.60.44.35:5000
+    description: 本地服务地址
+paths:
+  /open-local-image:
+    post:
+      operationId: openLocalImage
+      summary: 打开本地图片
+      description: 接收Windows本地完整路径，唤起系统图片查看器打开
+      tags:
+        - 本地文件处理
+      requestBody:
+        description: 本地图片路径参数
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpenLocalImageRequest'
+      responses:
+        '200':
+          description: 打开成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenLocalImageResponse'
+        '400':
+          description: 参数错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenLocalImageResponse'
+        '500':
+          description: 打开失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenLocalImageResponse'
+components:
+  schemas:
+    OpenLocalImageRequest:
+      type: object
+      required:
+        - local_path
+      properties:
+        local_path:
+          type: string
+          example: "{{参数提取器.output.full_path}}"  # 绑定参数提取器的full_path输出
+          description: Windows本地图片完整路径（由参数提取器动态传入）
+    OpenLocalImageResponse:
+      type: object
+      required:
+        - success
+        - message
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "已成功打开本地图片：{{local_path}}"
